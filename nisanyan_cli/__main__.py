@@ -1,21 +1,32 @@
-from nisanyan_cli.cli import main
 import argparse
+from .cli import Niscli
+
+__version__ = "0.0.2"
 
 # parse arguments
 argparser = argparse.ArgumentParser(prog="nisanyan_cli")
 argparser.add_argument(
-    "words",
+    "word",
     type=str,
     nargs="*",
-    help="[first word] [last word]",
+    help="<word>",
 )
-# argparser.add_argument("-l", "--list", action="store_true", default=True)
+argparser.add_argument(
+    "-p", "--plain", action="store_true", help="returns plain output"
+)
+argparser.add_argument(
+    "-v", "--version", action="version", version="%(prog)s v" + __version__
+)
 args = argparser.parse_args()
 
 
 def cli():
-    if len(args.words) > 0:
-        main("".join(args.words))
+    word = " ".join(args.word)
+    if len(args.word) > 0:
+        if args.plain:
+            Niscli(word).plain_output()
+        else:
+            Niscli(word).rich_output()
     else:
         print("kelime giriniz.")
 
