@@ -1,9 +1,9 @@
 ![screenshot](https://user-images.githubusercontent.com/16024979/135755755-d2142825-a0ad-4c1d-a6a7-5cedbce716a4.png)
 
 <div align="center">
-<a href="https://github.com/agmmnn/lugatim-cli">
+<a href="https://github.com/agmmnn/nisanyan-cli">
 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/agmmnn/nisanyan-cli"></a>
-<a href="https://pypi.org/project/lugatim-cli/">
+<a href="https://pypi.org/project/nisanyan-cli/">
 <img alt="PyPI" src="https://img.shields.io/pypi/v/nisanyan-cli"></a>
 
 CLI tool for Turkish etymological dictionary, [nisanyansozluk.com](https://www.nisanyansozluk.com/).
