@@ -1,112 +1,168 @@
-# -*- coding: utf-8 -*-
-import requests
-from urllib.parse import quote
-from bs4 import BeautifulSoup
+from time import sleep
+from urllib.parse import quote, unquote
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+from rich import print, box
 from rich.table import Table
-from rich.markup import escape
-from rich import box
-from rich import print as rprint
+from rich.console import Console
+from rich.align import Align
 
 
 class Niscli:
     def __init__(self, word):
         self.word = word
-        self.url = "https://www.nisanyansozluk.com/kelime/{}"
-        self.req()
-
-    def req(self):
-        session = requests.Session()
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
-        }
+        driver_path = "chromedriver.exe"
+        self.url = f"https://www.nisanyansozluk.com/kelime/{quote(word)}"
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        options.add_argument("--disable-gpu")
+        options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        try:
+            self.driver = webdriver.Chrome(driver_path, options=options)
+        except Exception as e:
+            print(e)
+            exit(1)
+        self.driver.get(self.url)
 
         try:
-            r = session.get(self.url.format(quote(self.word)), headers=headers)
-        except requests.exceptions.Timeout as e:
-            raise SystemExit(e)
-        except requests.exceptions.TooManyRedirects as e:
-            raise SystemExit(e)
-        except requests.exceptions.HTTPError as e:
-            raise SystemExit(e)
-        except requests.exceptions.RequestException as e:
-            raise SystemExit(f"cannot reach nisanyansozluk.com\n{e}")
-
-        self.soup = BeautifulSoup(r.content, "lxml")
-        return r
-
-    def similar_words(self):
-        aa = BeautifulSoup(str(self.soup.find("tbody")), "lxml").find_all("a")
-        wordlist = []
-        for i in aa:
-            wordlist.append(i.text)
-        wordlist.insert(5, "<" + self.word + ">")
-        return "Sonuç Bulunamadı... Yakın Kelimeler:\n" + ", ".join(wordlist)
-
-    def get_list(self):
-
-        rprint(self.soup)
-        div = self.soup.find("div", {"class": "sc-6f05a3c6-2 chGjLE"})
-        print(div)
-        # if div is None:
-        #     print(self.similar_words())
-        #     return None
-        return None
-
-        for br in div.find_all("br"):
-            br.replace_with("\n")
-        for s in div.find_all(
-            "span", {"style": "display:block;padding-left:25px;font-style:italic;"}
-        ):
-            s.replace_with("\n     > " + s.text + "\n")
-        topic = div.a.text.strip()
-        resultsoup = BeautifulSoup(str(div), "lxml")
-        results = resultsoup.find_all("div", {"class": "eskoken"})
-        lst = []
-        for i in results:
-            if i.find("div", class_="blmbasi") is not None:
-                lst.append(
-                    [
-                        i.find("div", class_="blmbasi").text.strip(),
-                        " " + i.p.get_text().replace("[ ", "[").strip(),
-                    ]
+            WebDriverWait(self.driver, 6).until(
+                expected_conditions.presence_of_element_located(
+                    (By.CSS_SELECTOR, ".sc-7f314b79-12")
                 )
-            else:
-                lst.append(["", i.p.text.strip()])
-        return lst, topic
-
-    def rich_output(self):
-        list = self.get_list()
-        if list is None:
+            )
+        except:
+            print("error")
             exit()
-        lst = list[0]
-        topic = list[1]
-        table = Table(
-            title="[green][link="
-            + self.url.format(quote(self.word))
-            + "]"
-            + topic
-            + " - "
-            + "Nişanyan Sözlük[/link]",
-            show_header=False,
-            box=box.SQUARE,
+
+        data = self.get_data()
+        self.print_data(data)
+        self.driver.quit()
+
+    def print_data(self, data):
+        # print(data)
+        for i in data:
+            table = Table(box=box.ROUNDED, show_footer=True)
+            table.add_column(
+                i,
+                header_style="bold",
+                footer=Align(
+                    data[i]["son_guncelleme"],
+                    vertical="middle",
+                    align="right",
+                    style="grey27",
+                ),
+            )
+            table.add_row("[#994E8E]Köken:[/#994E8E]\n" + data[i]["koken"] + "\n")
+            table.add_row(
+                "Daha fazla bilgi için "
+                + ", ".join(data[i]["daha_fazla"])
+                + " maddesine bakınız."
+                + "\n"
+            ) if data[i]["daha_fazla"] else None
+            table.add_row(
+                "[#994E8E]Ek açıklama:[/#994E8E]\n" + data[i]["ek_aciklama"] + "\n"
+            ) if data[i]["ek_aciklama"] else None
+            table.add_row(
+                "[#994E8E]Benzer sözcükler:[/#994E8E]\n"
+                + ", ".join(data[i]["benzer_sozcukler"])
+                + "\n"
+            ) if data[i]["benzer_sozcukler"] else None
+            table.add_row(
+                "[#994E8E]Bu maddeye gönderenler:[/#994E8E]\n"
+                + ", ".join(data[i]["bu_maddeye_gonderenler"])
+                + "\n"
+            ) if data[i]["bu_maddeye_gonderenler"] else None
+            table.add_row(
+                "[#994E8E]Tarihçe: (tespit edilen en eski Türkçe kaynak ve diğer örnekler)[/#994E8E]\n"
+                + "\n".join(data[i]["tarihce"])
+            ) if data[i]["tarihce"] else None
+            print(table)
+        Console().print(
+            f"[grey42][link={self.url}]nisanyansozluk.com↗[/link]", justify="right"
         )
-        table.add_column()
-        for idx, i in enumerate(lst):
-            newline = "\n" if idx != len(lst) - 1 else ""
-            if i[0] != "":
-                table.add_row("[cyan]" + i[0])
-            table.add_row(escape(i[1]) + newline)
-        rprint(table)
 
-    def plain_output(self):
-        list = self.get_list()
-        if list is None:
-            exit()
-        lst = list[0]
-        topic = list[1]
-        print(topic)
-        for idx, i in enumerate(lst):
-            newline = "\n" if idx != len(lst) - 1 else ""
-            if i[0] != "":
-                print(i[0] + ":")
-            print(i[1] + newline)
+    def get_data(self):
+        data = {}
+        divs = self.driver.find_elements(By.CSS_SELECTOR, ".sc-7f314b79-0")
+        for ix, i in enumerate(divs):
+            idx = ix + 1
+            # Kelime başlığı
+            kelime_baslik = i.find_element(By.CSS_SELECTOR, ".sc-7f314b79-2").text
+            try:
+                # Köken
+                koken = i.find_element(
+                    By.CSS_SELECTOR,
+                    ".sc-7f314b79-12",
+                ).text.strip()
+            except:
+                koken = ""
+            # Daha fazla bilgi için .. maddesine bakınız.
+            try:
+                daha_fazla = i.find_element(
+                    By.CSS_SELECTOR,
+                    ".sc-7f314b79-12>div",
+                )
+                koken = koken.replace(daha_fazla.text, "").strip()
+                daha_fazla = [
+                    i.text for i in daha_fazla.find_elements(By.TAG_NAME, "a")
+                ]
+            except:
+                daha_fazla = []
+            # Ek açıklama
+            try:
+                ek_aciklama = i.find_element(
+                    By.XPATH,
+                    f"(//div[normalize-space()='Ek açıklama']/following-sibling::div)[{idx}]",
+                ).text
+            except:
+                ek_aciklama = ""
+            # Benzer sözcükler
+            try:
+                benzer_sozcukler = i.find_element(
+                    By.XPATH,
+                    f"(//div[normalize-space()='Benzer sözcükler']/following-sibling::div)[{idx}]",
+                ).text.split(", ")
+            except:
+                benzer_sozcukler = []
+            # Bu maddeye gönderenler
+            try:
+                bu_maddeye_gonderenler = i.find_element(
+                    By.XPATH,
+                    f"(//div[normalize-space()='Bu maddeye gönderenler']/following-sibling::div)[{idx}]",
+                ).find_elements(By.TAG_NAME, "a")
+                bu_maddeye_gonderenler = [i.text for i in bu_maddeye_gonderenler]
+            except:
+                bu_maddeye_gonderenler = []
+            # Tarihçe
+            try:
+                tarihce = i.find_element(
+                    By.XPATH,
+                    f"(//span[contains(text(),'(tespit edilen en eski Türkçe kaynak ve diğer örnekler)')]/../following-sibling::div)[{idx}]",
+                ).find_elements(By.CSS_SELECTOR, ".sc-7f314b79-16")
+                tarihcelist = []
+                for k in tarihce:
+                    j = k.find_elements(By.CSS_SELECTOR, "div")
+                    tarihcelist.append(
+                        "[gray58]"
+                        + j[0].text.replace("[", "\[")
+                        + "[/gray58]\n  "
+                        + j[1].text
+                    )
+                tarihce = tarihcelist
+            except:
+                tarihce = []
+            # Son güncelleme
+            son_guncelleme = i.find_element(By.CLASS_NAME, "sc-7f314b79-24").text
+
+            data[kelime_baslik] = {
+                "koken": koken,
+                "daha_fazla": daha_fazla,
+                "ek_aciklama": ek_aciklama,
+                "benzer_sozcukler": benzer_sozcukler,
+                "bu_maddeye_gonderenler": bu_maddeye_gonderenler,
+                "tarihce": tarihce,
+                "son_guncelleme": son_guncelleme,
+            }
+        return data
