@@ -1,5 +1,4 @@
-from time import sleep
-from urllib.parse import quote, unquote
+from urllib.parse import quote
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,12 +7,16 @@ from rich import print, box
 from rich.table import Table
 from rich.console import Console
 from rich.align import Align
+from os import name as os_name
 
 
 class Niscli:
     def __init__(self, word):
         self.word = word
-        driver_path = "chromedriver.exe"
+        if os_name == "nt":
+            driver_path = "chromedriver.exe"
+        else:
+            driver_path = "chromedriver"
         self.url = f"https://www.nisanyansozluk.com/kelime/{quote(word)}"
         options = webdriver.ChromeOptions()
         options.headless = True
