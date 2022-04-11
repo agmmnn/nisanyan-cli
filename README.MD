@@ -1,4 +1,4 @@
-![screenshot](https://user-images.githubusercontent.com/16024979/135755755-d2142825-a0ad-4c1d-a6a7-5cedbce716a4.png)
+![screenshot](https://user-images.githubusercontent.com/16024979/162843362-4050c114-dc82-49eb-ac43-dd6cef79382a.png)
 
 <div align="center">
 <a href="https://github.com/agmmnn/nisanyan-cli">
@@ -8,37 +8,35 @@
 
 CLI tool for Turkish etymological dictionary, [nisanyansozluk.com](https://www.nisanyansozluk.com/).
 
+_Not: Site yeni güncellemeyle birlikte dinamik hale geldiği için kodda da [selenium](https://github.com/SeleniumHQ/selenium) kullanmak elzem oldu, [ChromeDriver](https://chromedriver.chromium.org/)'ı indirip sistem path dizinlerinden birine ya da kodu çalıştırdığınız dizine kopyalamanız yeterli._
+
 </div>
 
 ## Install
 
-- `pip install nisanyan-cli`
+`pip install nisanyan-cli`
 
 ## Usege
 
 - `nis <word>`
 
-### Arguments
+### Example Usage:
+
+- `nis yakamoz`
+
+![](https://user-images.githubusercontent.com/16024979/162844886-7831aebc-8efe-4018-9df5-b26babcc1ca3.png)
+
+## Arguments
 
 ```
+  <word>
   -h, --help     show this help message and exit
-  -p, --plain    returns plain output
   -v, --version  show program's version number and exit
 ```
 
-# Requirements
-
-- Python >3.5
-
 ## Dependencies
 
-- [requests](https://pypi.org/project/requests/)
-- [beautifulsoup4](https://pypi.org/project/beautifulsoup4/)
+- [selenium](https://pypi.org/project/selenium/)
 - [rich](https://pypi.org/project/rich/)
-- [lxml](https://pypi.org/project/lxml/)
 
 _Note: Be aware when this code was published. If the site will be updated in the future this code may not work properly._
-
-## License
-
-CC0
