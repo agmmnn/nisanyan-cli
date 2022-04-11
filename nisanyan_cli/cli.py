@@ -11,7 +11,7 @@ from rich import print as rprint
 class Niscli:
     def __init__(self, word):
         self.word = word
-        self.url = "https://www.nisanyansozluk.com/?k={}&lnk=1&view=annotated"
+        self.url = "https://www.nisanyansozluk.com/kelime/{}"
         self.req()
 
     def req(self):
@@ -19,6 +19,7 @@ class Niscli:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
         }
+
         try:
             r = session.get(self.url.format(quote(self.word)), headers=headers)
         except requests.exceptions.Timeout as e:
@@ -29,6 +30,7 @@ class Niscli:
             raise SystemExit(e)
         except requests.exceptions.RequestException as e:
             raise SystemExit(f"cannot reach nisanyansozluk.com\n{e}")
+
         self.soup = BeautifulSoup(r.content, "lxml")
         return r
 
@@ -41,12 +43,15 @@ class Niscli:
         return "Sonuç Bulunamadı... Yakın Kelimeler:\n" + ", ".join(wordlist)
 
     def get_list(self):
-        div = self.soup.find("tr", {"class": "yaz hghlght"})
-        if div is None:
-            print(self.similar_words())
-            return None
 
-        div = self.soup.find("tr", {"class": "yaz hghlght"})
+        rprint(self.soup)
+        div = self.soup.find("div", {"class": "sc-6f05a3c6-2 chGjLE"})
+        print(div)
+        # if div is None:
+        #     print(self.similar_words())
+        #     return None
+        return None
+
         for br in div.find_all("br"):
             br.replace_with("\n")
         for s in div.find_all(
