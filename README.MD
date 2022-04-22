@@ -39,7 +39,7 @@ $ nis çikolata --tree
             └── atl (Aztekçe): su.
 ```
 
-![](https://user-images.githubusercontent.com/16024979/163723478-b96b599f-30e0-4472-886c-3f088ba17aa7.png)
+![](https://user-images.githubusercontent.com/16024979/164780578-0d51d1b1-31b6-48a4-a09e-b42aa6b6c515.png)
 
 ## Arguments
 
