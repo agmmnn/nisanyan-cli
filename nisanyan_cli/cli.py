@@ -30,23 +30,30 @@ class Niscli:
         self.driver.get(self.url)
 
         try:
-            WebDriverWait(self.driver, 6).until(
+            WebDriverWait(self.driver, 3).until(
                 expected_conditions.presence_of_element_located(
                     (By.CSS_SELECTOR, ".sc-7f314b79-12")
                 )
             )
         except:
-            print("error")
+            aa = [
+                i.text
+                for i in self.driver.find_element(
+                    By.CSS_SELECTOR, ".sc-c67120d4-1.cxEZrH"
+                ).find_elements(By.TAG_NAME, "a")
+            ]
+            print(", ".join(aa[:-1]))
+            self.driver.quit()
             exit()
 
         data = self.get_data()
-        self.print_data(data)
         self.driver.quit()
+        self.print_data(data)
 
     def print_data(self, data):
         # print(data)
         for i in data:
-            table = Table(box=box.ROUNDED, show_footer=True)
+            table = Table(box=box.ROUNDED, show_footer=True, expand=True)
             table.add_column(
                 i,
                 header_style="bold",
@@ -54,12 +61,12 @@ class Niscli:
                     data[i]["son_guncelleme"],
                     vertical="middle",
                     align="right",
-                    style="grey27",
+                    style="grey42",
                 ),
             )
             table.add_row("[#994E8E]Köken:[/#994E8E]\n" + data[i]["koken"] + "\n")
             table.add_row(
-                "Daha fazla bilgi için "
+                "Daha fazla bilgi için"
                 + ", ".join(data[i]["daha_fazla"])
                 + " maddesine bakınız."
                 + "\n"
@@ -148,10 +155,11 @@ class Niscli:
                 for k in tarihce:
                     j = k.find_elements(By.CSS_SELECTOR, "div")
                     tarihcelist.append(
-                        "[gray58]"
+                        "[grey42]"
                         + j[0].text.replace("[", "\[")
-                        + "[/gray58]\n  "
+                        + "[/grey42]\n  [i]"
                         + j[1].text
+                        + "[/i]"
                     )
                 tarihce = tarihcelist
             except:
