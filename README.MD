@@ -8,29 +8,45 @@
 
 CLI tool for Turkish etymological dictionary, [nisanyansozluk.com](https://www.nisanyansozluk.com/).
 
-_Not: Site yeni güncellemeyle birlikte dinamik hale geldiği için kodda da [selenium](https://github.com/SeleniumHQ/selenium) kullanmak elzem oldu, [ChromeDriver](https://chromedriver.chromium.org/)'ı indirip sistem path dizinlerinden birine ya da kodu çalıştırdığınız dizine kopyalamanız yeterli._
+_Not: Site yeni güncellemeyle birlikte dinamik hale geldiği için kodda da istemesem de [selenium](https://github.com/SeleniumHQ/selenium) kullanmak elzem oldu, [ChromeDriver](https://chromedriver.chromium.org/)'ı indirip sistem path dizinlerinden birine ya da kodu çalıştırdığınız dizine kopyalamanız yeterli._
 
 </div>
 
 ## Install
 
-`pip install nisanyan-cli`
+```
+pip install nisanyan-cli
+```
 
 ## Usege
 
-- `nis <word>`
-
-### Example Usage:
-
-- `nis yakamoz`
+```
+$ nis yakamoz
+```
 
 ![](https://user-images.githubusercontent.com/16024979/162844886-7831aebc-8efe-4018-9df5-b26babcc1ca3.png)
+
+### Etymology Tree (`--tree`, `-t`):
+
+```
+$ nis çikolata --tree
+
+çikolata (Günümüz Türkçesi)
+└── cioccolata (İtalyanca): kakao yağı ve şekerle imal edilen yiyecek maddesi.
+    └── chocolate (İspanyolca): ~.
+        └── xocolatl (Aztekçe): kakaodan yapılan içecek.
+            ├── xocolli (Aztekçe): acı.
+            └── atl (Aztekçe): su.
+```
+
+![](https://user-images.githubusercontent.com/16024979/163723478-b96b599f-30e0-4472-886c-3f088ba17aa7.png)
 
 ## Arguments
 
 ```
   <word>
   -h, --help     show this help message and exit
+  -t, --tree     show result as etymology tree
   -v, --version  show program's version number and exit
 ```
 
