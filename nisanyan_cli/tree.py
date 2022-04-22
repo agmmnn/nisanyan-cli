@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions
 from rich import print
 from rich.tree import Tree
 from os import name as os_name
-import json
+from .langs_list import lang_dict
 
 
 class Nistree:
@@ -50,8 +50,7 @@ class Nistree:
         )
         self.driver.execute_script("arguments[0].scrollIntoView();", kompakt_buton)
         self.driver.execute_script("arguments[0].click();", kompakt_buton)
-        with open("nisanyan_cli/langs.json", "r", encoding="utf-8") as f:
-            self.lang_dict = json.load(f)
+        self.lang_dict = lang_dict
         self.get_data()
         self.driver.quit()
 
