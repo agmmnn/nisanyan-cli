@@ -1,8 +1,8 @@
 import argparse
-from .cli import Niscli
 from .tree import Nistree
+from .cli import Niscli
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 # parse arguments
 argparser = argparse.ArgumentParser(prog="nisanyan_cli")

@@ -8,7 +8,7 @@
 
 CLI tool for Turkish etymological dictionary, [nisanyansozluk.com](https://www.nisanyansozluk.com/).
 
-_Not: Site yeni güncellemeyle birlikte dinamik hale geldiği için kodda da istemesem de [selenium](https://github.com/SeleniumHQ/selenium) kullanmak elzem oldu, [ChromeDriver](https://chromedriver.chromium.org/)'ı indirip sistem path dizinlerinden birine ya da kodu çalıştırdığınız dizine kopyalamanız yeterli._
+_Not: Artık 0.3 sürümünden itibariyle yavaş selenium yerine direkt nisanyan sözlüğün api endpoint'i[\*](https://github.com/agmmnn/Radyal-api#nisanyan-decrypt) kullanılmaktadır._
 
 </div>
 
@@ -52,7 +52,6 @@ $ nis çikolata --tree
 
 ## Dependencies
 
-- [selenium](https://pypi.org/project/selenium/)
 - [rich](https://pypi.org/project/rich/)
 
 _Note: Be aware when this code was published. If the site will be updated in the future this code may not work properly._
