@@ -4,6 +4,7 @@ from rich.console import Console
 from rich.align import Align
 from urllib.parse import quote
 from .request import req
+from ._utils import *
 
 
 class Niscli:
@@ -37,7 +38,7 @@ class Niscli:
                         + (f'{j["excerpt"]} ' if j["excerpt"] != "" else "")
                         + f'[grey50][{(j["source"]["name"]+", ") if j["source"]["name"]!=""else ""}{j["source"]["book"]}, {j["date"]}][/]'
                     )
-                    quote = self.replace_chars(
+                    quote = replace_chars(
                         j["quote"].replace("[", "〔").replace("]", "〕")
                     )
                     lst.append([txt, quote])
@@ -49,51 +50,30 @@ class Niscli:
                     )
             except:
                 tarihce = None
-
-            lst = []
-            koken = ""
-            for j in i["etymologies"]:
-                txt = (
-                    f'{j["languages"][0]["name"]} {j["romanizedText"]} {(j["originalText"]+" " if j["originalText"]!=""else"")}'
-                    + ('"' + j["definition"] + '"' if j["definition"] != "" else "")
-                )
-                lst.append(txt)
-            for j in lst:
-                koken = koken + j + ". "
+            try:
+                lst = []
+                koken = ""
+                for j in i["etymologies"]:
+                    txt = (
+                        f'{j["languages"][0]["name"]} {j["romanizedText"]} {(j["originalText"]+" " if j["originalText"]!=""else"")}'
+                        + ('"' + j["definition"] + '"' if j["definition"] != "" else "")
+                    )
+                    lst.append(txt)
+                for j in lst:
+                    koken = koken + j + ". "
+            except:
+                koken = None
 
             output[i["name"]] = {
                 "koken": koken,
                 "daha_fazla": daha_fazla,
-                "ek_aciklama": self.replace_chars(i["note"]) if i["note"] else None,
+                "ek_aciklama": replace_chars(i["note"]) if i["note"] else None,
                 "benzer_sozcukler": i["queries"],
                 "maddeye_gonderenler": maddeye_gonderenler,
                 "tarihce": tarihce,
-                "son_guncelleme": self.date_convert(i["timeUpdated"][:10]),
+                "son_guncelleme": date_convert(i["timeUpdated"][:10]),
             }
         return output
-
-    def replace_chars(self, text):
-        text = text.replace("%b", "").replace("%i", "").replace("%u", "")
-        text = text.replace("ETü", "Eski Türkçe")
-        return text
-
-    def date_convert(self, date):
-        aylar = {
-            "01": "Ocak",
-            "02": "Şubat",
-            "03": "Mart",
-            "04": "Nisan",
-            "05": "Mayıs",
-            "06": "Haziran",
-            "07": "Temmuz",
-            "08": "Ağustos",
-            "09": "Eylül",
-            "10": "Ekim",
-            "11": "Kasım",
-            "12": "Aralık",
-        }
-        date = date.split("-")
-        return date[2] + " " + aylar[date[1]] + " " + date[0]
 
     def print_data(self):
         data = self.get_data()
@@ -110,7 +90,9 @@ class Niscli:
                     style="grey42",
                 ),
             )
-            table.add_row("[#994E8E]Köken:[/#994E8E]\n" + data[i]["koken"] + "\n")
+            table.add_row(
+                "[#994E8E]Köken:[/#994E8E]\n" + data[i]["koken"] + "\n"
+            ) if data[i]["koken"] else None
             table.add_row(
                 "Daha fazla bilgi için [cornflower_blue]"
                 + "[/], [cornflower_blue]".join(data[i]["daha_fazla"])

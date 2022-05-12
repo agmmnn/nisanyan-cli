@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as file:
     requires = [line.strip() for line in file.readlines()]
 
 DESCRIPTION = (
-    "CLI tool for Turkish etymological dictionary, nisanyansozluk.com. (nis <word>)"
+    "CLI tool for Turkish etymological dictionary, nisanyansozluk.com (nis <word>)"
 )
 
 setup(
@@ -29,6 +29,6 @@ setup(
     install_requires=requires,
     include_package_data=True,
     package_data={"nisanyan_cli": ["nisanyan_cli/*"]},
-    python_requires=">=3.5",
+    python_requires=">=3.6.3",
     entry_points={"console_scripts": ["nis = nisanyan_cli.__main__:cli"]},
 )

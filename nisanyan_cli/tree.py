@@ -1,7 +1,7 @@
 from rich import print
 from rich.tree import Tree
 from urllib.parse import quote
-from .langs_list import lang_dict
+from ._langlist import lang_dict
 
 
 class Nistree:
@@ -10,17 +10,48 @@ class Nistree:
         self.request = request
         self.print_tree()
 
-    def get_data(self):
-        data = self.request
-        return data["words"]
-
     def print_tree(self):
-        data = self.get_data()
-        for j in data:
-            tree = Tree(f"{self.word} [cyan](Günümüz Türkçesi)[/]")
-            for i in j["etymologies"]:
-                tree.add(
-                    f'{i["romanizedText"]}({i["originalText"]}) ({i["languages"][0]["name"]}): [grey50]{i["definition"]}.[/]'
-                )
+        sublist = ["bileşik sözcük", "bileşik sözcüğün devamı", "veya"]
+        word = self.request["words"]
+        for idx, word in enumerate(word):
+            tree = Tree(
+                f'{self.request["words"][idx]["name"]} [cyan](Günümüz Türkçesi)[/]'
+            )
+            lst = []
+            try:
+                for i in word["etymologies"]:
+                    lang = i["languages"][0]["name"]
+                    dil = (
+                        f"({lang})"
+                        if lang not in lang_dict
+                        else (
+                            f'[cyan]([link={lang_dict[lang]["wiki_link"]}]'
+                            + lang_dict[lang]["name"]
+                            + "[/link]"
+                            + f' {lang_dict[lang]["era"]})'
+                        )
+                    )
+                    lst.append(
+                        f'{i["romanizedText"]}{(" ‹"+i["originalText"]+"›") if i["originalText"]!=""else""} [cyan]{dil}[/]{(": [grey50]"+i["definition"].replace("a.a.","[i]aynı anlam")+".[/]") if i["definition"]!="" else ""}'
+                        + (
+                            " "
+                            + " ".join(i["affixes"][a]["name"] for a in i["affixes"])
+                            if i["affixes"] != {}
+                            else ""
+                        )
+                    )
+            except:
+                continue
+
+            sub = {}
+            sub[lst[0]] = tree.add(lst[0])
+            last1 = sub[lst[0]]
+            if len(lst) > 1:
+                for ix, i in enumerate(lst[1:]):
+                    if word["etymologies"][ix + 1]["relation"]["name"] not in sublist:
+                        sub[i] = sub[list(sub.keys())[-1]].add(i)
+                        last1 = sub[list(sub.keys())[-1]]
+                    else:
+                        sub[i] = last1.add(i)
             print(tree)
             print()

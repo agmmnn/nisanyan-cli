@@ -43,7 +43,7 @@ def close_words(word, request):
         clr = clr - 25
         fiveBefore.append(f"[rgb({clr},{clr},{clr})]" + b["name"] + "[/]")
         fiveAfter.append(f"[rgb({clr},{clr},{clr})]" + a["name"] + "[/]")
-    print("[i cyan]Girdiğiniz kelime bulunamadı. Yakın sonuçlar:[/]")
+    print("[i cyan]Kelime bulunamadı. Yakın sonuçlar:[/]")
     print(
         f'{", ".join(fiveBefore[::-1])}, {request["words"][0]["name"]}, {", ".join(fiveAfter)}'
     )
@@ -62,14 +62,12 @@ def cli():
         else:
             Nistree(word, request)
     elif args.random:
-        request = req("ab")
-        word = request["randomWord"]["name"]
+        word = req("asdfgh")["randomWord"]["name"]
+        request = req(quote(word))
         if not args.tree:
             Niscli(word, request)
         else:
             Nistree(word, request)
-    else:
-        print("Kelime girmediniz.")
 
 
 if __name__ == "__main__":
