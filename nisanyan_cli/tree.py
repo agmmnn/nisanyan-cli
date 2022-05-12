@@ -2,16 +2,16 @@ from rich import print
 from rich.tree import Tree
 from urllib.parse import quote
 from .langs_list import lang_dict
-from .request import req
 
 
 class Nistree:
-    def __init__(self, word):
+    def __init__(self, word, request):
         self.word = quote(word)
+        self.request = request
         self.print_tree()
 
     def get_data(self):
-        data = req(self.word)
+        data = self.request
         return data["words"]
 
     def print_tree(self):

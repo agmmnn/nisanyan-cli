@@ -7,32 +7,93 @@ from .request import req
 
 
 class Niscli:
-    def __init__(self, word):
+    def __init__(self, word, request):
         self.word = quote(word)
+        self.request = request
         self.print_data()
 
     def get_data(self):
         output = {}
-        data = req(self.word)
+        data = self.request
         for i in data["words"]:
+
             try:
                 maddeye_gonderenler = [j["name"] for j in i["referenceOf"]]
             except:
                 maddeye_gonderenler = []
+
             try:
                 daha_fazla = [j["name"] for j in i["references"]]
             except:
                 daha_fazla = []
+
+            try:
+                lst = []
+                tarihce = ""
+                for j in i["histories"]:
+                    txt = (
+                        (f'{j["language"]["name"]}: ' if "language" in j else "")
+                        + (f'"{j["definition"]}" ' if j["definition"] != "" else "")
+                        + (f'{j["excerpt"]} ' if j["excerpt"] != "" else "")
+                        + f'[grey50][{(j["source"]["name"]+", ") if j["source"]["name"]!=""else ""}{j["source"]["book"]}, {j["date"]}][/]'
+                    )
+                    quote = self.replace_chars(
+                        j["quote"].replace("[", "〔").replace("]", "〕")
+                    )
+                    lst.append([txt, quote])
+                for j in lst:
+                    tarihce = (
+                        tarihce
+                        + f"{j[0]}\n  [i aquamarine1]{j[1]}[/]"
+                        + ("\n" if j != lst[-1] else "")
+                    )
+            except:
+                tarihce = None
+
+            lst = []
+            koken = ""
+            for j in i["etymologies"]:
+                txt = (
+                    f'{j["languages"][0]["name"]} {j["romanizedText"]} {(j["originalText"]+" " if j["originalText"]!=""else"")}'
+                    + ('"' + j["definition"] + '"' if j["definition"] != "" else "")
+                )
+                lst.append(txt)
+            for j in lst:
+                koken = koken + j + ". "
+
             output[i["name"]] = {
-                "koken": i["etymologies"],
+                "koken": koken,
                 "daha_fazla": daha_fazla,
-                "ek_aciklama": i["note"],
+                "ek_aciklama": self.replace_chars(i["note"]) if i["note"] else None,
                 "benzer_sozcukler": i["queries"],
                 "maddeye_gonderenler": maddeye_gonderenler,
-                "tarihce": i["histories"],
-                "son_guncelleme": i["timeUpdated"],
+                "tarihce": tarihce,
+                "son_guncelleme": self.date_convert(i["timeUpdated"][:10]),
             }
         return output
+
+    def replace_chars(self, text):
+        text = text.replace("%b", "").replace("%i", "").replace("%u", "")
+        text = text.replace("ETü", "Eski Türkçe")
+        return text
+
+    def date_convert(self, date):
+        aylar = {
+            "01": "Ocak",
+            "02": "Şubat",
+            "03": "Mart",
+            "04": "Nisan",
+            "05": "Mayıs",
+            "06": "Haziran",
+            "07": "Temmuz",
+            "08": "Ağustos",
+            "09": "Eylül",
+            "10": "Ekim",
+            "11": "Kasım",
+            "12": "Aralık",
+        }
+        date = date.split("-")
+        return date[2] + " " + aylar[date[1]] + " " + date[0]
 
     def print_data(self):
         data = self.get_data()
@@ -49,13 +110,13 @@ class Niscli:
                     style="grey42",
                 ),
             )
+            table.add_row("[#994E8E]Köken:[/#994E8E]\n" + data[i]["koken"] + "\n")
             table.add_row(
-                "[#994E8E]Köken:[/#994E8E]\n" + str(data[i]["koken"][0]) + "\n"
-            )
-            table.add_row(
-                "Daha fazla bilgi için "
-                + ", ".join(data[i]["daha_fazla"])
-                + " maddesine bakınız."
+                "Daha fazla bilgi için [cornflower_blue]"
+                + "[/], [cornflower_blue]".join(data[i]["daha_fazla"])
+                + "[/] "
+                + ("maddesine" if len(data[i]["daha_fazla"]) == 1 else "maddelerine")
+                + " bakınız."
                 + "\n"
             ) if data[i]["daha_fazla"] else None
             table.add_row(
@@ -63,17 +124,17 @@ class Niscli:
             ) if data[i]["ek_aciklama"] else None
             table.add_row(
                 "[#994E8E]Benzer sözcükler:[/#994E8E]\n"
-                + ", ".join(data[i]["benzer_sozcukler"])
+                + ", ".join(data[i]["benzer_sozcukler"][:20])
                 + "\n"
             ) if data[i]["benzer_sozcukler"] else None
             table.add_row(
-                "[#994E8E]Bu maddeye gönderenler:[/#994E8E]\n"
-                + ", ".join(data[i]["maddeye_gonderenler"])
-                + "\n"
+                "[#994E8E]Bu maddeye gönderenler:[/#994E8E]\n[cornflower_blue]"
+                + "[/], [cornflower_blue]".join(data[i]["maddeye_gonderenler"][:24])
+                + "[/]\n"
             ) if data[i]["maddeye_gonderenler"] else None
             table.add_row(
                 "[#994E8E]Tarihçe: (tespit edilen en eski Türkçe kaynak ve diğer örnekler)[/#994E8E]\n"
-                + str(data[i]["tarihce"][0])
+                + data[i]["tarihce"]
             ) if data[i]["tarihce"] else None
             print(table)
         Console().print(

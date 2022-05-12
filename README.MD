@@ -47,6 +47,7 @@ $ nis çikolata --tree
   <word>
   -h, --help     show this help message and exit
   -t, --tree     show result as etymology tree
+  -r, --random   selects a random word and brings the result
   -v, --version  show program's version number and exit
 ```
 
