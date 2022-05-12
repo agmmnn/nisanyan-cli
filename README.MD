@@ -8,7 +8,7 @@
 
 CLI tool for Turkish etymological dictionary, [nisanyansozluk.com](https://www.nisanyansozluk.com/).
 
-_Not: Artık 0.3 sürümünden itibariyle yavaş selenium yerine direkt nisanyan sözlüğün api endpoint'i[\*](https://github.com/agmmnn/Radyal-api#nisanyan-decrypt) kullanılmaktadır._
+_Not: Artık 0.3 sürümü itibariyle 'yavaş selenium' yerine direkt nisanyan sözlüğün api endpoint'i[\*](https://github.com/agmmnn/Radyal-api#nisanyan-decrypt) kullanılmaktadır._
 
 </div>
 
