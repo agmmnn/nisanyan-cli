@@ -17,17 +17,31 @@ class Niscli:
         output = {}
         data = self.request
         for i in data["words"]:
-
+            # Köken
             try:
-                maddeye_gonderenler = [j["name"] for j in i["referenceOf"]]
+                lst = []
+                koken = ""
+                for j in i["etymologies"]:
+                    txt = (
+                        f'[b]{j["languages"][0]["name"]}[/] [i]{j["romanizedText"]}[/] {(j["originalText"]+" " if j["originalText"]!=""else"")}'
+                        + ("“" + j["definition"] + "”" if j["definition"] != "" else "")
+                    )
+                    lst.append(txt)
+                for j in lst:
+                    koken = koken + j + ". "
             except:
-                maddeye_gonderenler = []
-
+                koken = None
+            # Daha fazla
             try:
                 daha_fazla = [j["name"] for j in i["references"]]
             except:
                 daha_fazla = []
-
+            # Bu maddeye gönderenler
+            try:
+                maddeye_gonderenler = [j["name"] for j in i["referenceOf"]]
+            except:
+                maddeye_gonderenler = []
+            # Tarihçe
             try:
                 lst = []
                 tarihce = ""
@@ -35,7 +49,7 @@ class Niscli:
                     txt = (
                         (f'{j["language"]["name"]}: ' if "language" in j else "")
                         + (f'"{j["definition"]}" ' if j["definition"] != "" else "")
-                        + (f'{j["excerpt"]} ' if j["excerpt"] != "" else "")
+                        + (f'[i]{j["excerpt"]}[/] ' if j["excerpt"] != "" else "")
                         + f'[grey50][{(j["source"]["name"]+", ") if j["source"]["name"]!=""else ""}{j["source"]["book"]}, {j["date"]}][/]'
                     )
                     quote = replace_chars(
@@ -45,27 +59,14 @@ class Niscli:
                 for j in lst:
                     tarihce = (
                         tarihce
-                        + f"{j[0]}\n  [i aquamarine1]{j[1]}[/]"
+                        + f"{j[0]}\n  [i]{j[1]}[/]"
                         + ("\n" if j != lst[-1] else "")
                     )
             except:
                 tarihce = None
-            try:
-                lst = []
-                koken = ""
-                for j in i["etymologies"]:
-                    txt = (
-                        f'{j["languages"][0]["name"]} {j["romanizedText"]} {(j["originalText"]+" " if j["originalText"]!=""else"")}'
-                        + ('"' + j["definition"] + '"' if j["definition"] != "" else "")
-                    )
-                    lst.append(txt)
-                for j in lst:
-                    koken = koken + j + ". "
-            except:
-                koken = None
 
             output[i["name"]] = {
-                "koken": koken,
+                "koken": replace_chars(koken) if koken else None,
                 "daha_fazla": daha_fazla,
                 "ek_aciklama": replace_chars(i["note"]) if i["note"] else None,
                 "benzer_sozcukler": i["queries"],

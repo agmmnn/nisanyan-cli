@@ -1,7 +1,7 @@
 from setuptools import setup
 from nisanyan_cli.__main__ import __version__ as version
 
-with open("README.md", "r") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 with open("requirements.txt", "r") as file:

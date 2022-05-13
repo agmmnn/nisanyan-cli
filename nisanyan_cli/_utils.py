@@ -1,7 +1,11 @@
 def replace_chars(text):
-    text = text.replace("%b", "").replace("%i", "").replace("%u", "")
-    text.replace("ETü", "Eski Türkçe")
-    return text
+    return (
+        text.replace("%b", "")
+        .replace("%i", "")
+        .replace("%u", "")
+        .replace("ETü", "Eski Türkçe")
+        .replace("a.a.", "aynı anlam")
+    )
 
 
 def date_convert(date):

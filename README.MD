@@ -8,7 +8,7 @@
 
 CLI tool for Turkish etymological dictionary, [nisanyansozluk.com](https://www.nisanyansozluk.com/).
 
-_Not: Artık 0.3 sürümü itibariyle 'yavaş selenium' yerine direkt nisanyan sözlüğün api endpoint'i[\*](https://github.com/agmmnn/Radyal-api#nisanyan-decrypt) kullanılmaktadır._
+_Not: 0.3 sürümü itibariyle 'yavaş selenium' yerine artık direkt nisanyan sözlüğün api endpoint'i[\*](https://github.com/agmmnn/Radyal-api#nisanyan-decrypt) kullanılmaktadır._
 
 </div>
 
@@ -30,7 +30,6 @@ $ nis yakamoz
 
 ```
 $ nis çikolata --tree
-
 çikolata (Günümüz Türkçesi)
 └── cioccolata (İtalyanca): kakao yağı ve şekerle imal edilen yiyecek maddesi.
     └── chocolate (İspanyolca): ~.
@@ -40,6 +39,17 @@ $ nis çikolata --tree
 ```
 
 ![](https://user-images.githubusercontent.com/16024979/164780578-0d51d1b1-31b6-48a4-a09e-b42aa6b6c515.png)
+
+### Random Word (`--random`, `-r`):
+
+```
+$ nis -r -t
+menekşe (Günümüz Türkçesi)
+└── banafşe ‹بنفشه› (Farsça): aynı anlam.
+    └── vanavşag (Orta Farsça 1300—1500): aynı anlam.
+        └── *vana-vaxşa- (Avestaca MÖ.2000): orman otu.
+            └── vaxşaiti, vaxş- (Avestaca MÖ.2000): yetişmek, bitmek (bitki).
+```
 
 ## Arguments
 
@@ -54,5 +64,3 @@ $ nis çikolata --tree
 ## Dependencies
 
 - [rich](https://pypi.org/project/rich/)
-
-_Note: Be aware when this code was published. If the site will be updated in the future this code may not work properly._

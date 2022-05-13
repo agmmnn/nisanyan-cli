@@ -18,30 +18,57 @@ class Nistree:
                 f'{self.request["words"][idx]["name"]} [cyan](Günümüz Türkçesi)[/]'
             )
             lst = []
-            try:
-                for i in word["etymologies"]:
-                    lang = i["languages"][0]["name"]
-                    dil = (
-                        f"({lang})"
-                        if lang not in lang_dict
-                        else (
-                            f'[cyan]([link={lang_dict[lang]["wiki_link"]}]'
-                            + lang_dict[lang]["name"]
-                            + "[/link]"
-                            + f' {lang_dict[lang]["era"]})'
-                        )
+
+            for i in word["etymologies"]:
+                lang = i["languages"][0]["name"]
+                dil = (
+                    f"({lang})"
+                    if lang not in lang_dict
+                    else (
+                        f'[cyan]([link={lang_dict[lang]["wiki_link"]}]'
+                        + lang_dict[lang]["name"]
+                        + "[/link]"
+                        + f' {lang_dict[lang]["era"]})'
                     )
-                    lst.append(
-                        f'{i["romanizedText"]}{(" ‹"+i["originalText"]+"›") if i["originalText"]!=""else""} [cyan]{dil}[/]{(": [grey50]"+i["definition"].replace("a.a.","[i]aynı anlam")+".[/]") if i["definition"]!="" else ""}'
-                        + (
-                            " "
-                            + " ".join(i["affixes"][a]["name"] for a in i["affixes"])
-                            if i["affixes"] != {}
-                            else ""
+                )
+                lst.append(
+                    (
+                        (
+                            f'[i cyan][link=https://www.nisanyansozluk.com/ek/{quote(i["affixes"]["prefix"]["name"])}]'
+                            + i["affixes"]["prefix"]["name"]
+                            + "[/][/] "
                         )
+                        if (i["affixes"] != {} and "prefix" in i["affixes"])
+                        else ""
                     )
-            except:
-                continue
+                    + i["romanizedText"]
+                    + (
+                        (" ‹" + i["originalText"] + "›")
+                        if i["originalText"] != ""
+                        else ""
+                    )
+                    + (
+                        (
+                            f' [i cyan][link=https://www.nisanyansozluk.com/ek/{quote(i["affixes"]["suffix"]["name"])}]'
+                            + i["affixes"]["suffix"]["name"]
+                            + "[/][/]"
+                        )
+                        if (i["affixes"] != {} and "suffix" in i["affixes"])
+                        else ""
+                    )
+                    + f" [cyan]{dil}[/]"
+                    + (
+                        (
+                            ": [grey50]"
+                            + i["definition"].replace("a.a.", "[i]aynı anlam")
+                            + ".[/]"
+                        )
+                        if i["definition"] != ""
+                        else ""
+                    )
+                )
+            # except:
+            #     continue
 
             sub = {}
             sub[lst[0]] = tree.add(lst[0])
