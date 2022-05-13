@@ -2,6 +2,7 @@ from rich import print
 from rich.tree import Tree
 from urllib.parse import quote
 from ._langlist import lang_dict
+from ._utils import replace_chars
 
 
 class Nistree:
@@ -18,57 +19,53 @@ class Nistree:
                 f'{self.request["words"][idx]["name"]} [cyan](Günümüz Türkçesi)[/]'
             )
             lst = []
-
-            for i in word["etymologies"]:
-                lang = i["languages"][0]["name"]
-                dil = (
-                    f"({lang})"
-                    if lang not in lang_dict
-                    else (
-                        f'[cyan]([link={lang_dict[lang]["wiki_link"]}]'
-                        + lang_dict[lang]["name"]
-                        + "[/link]"
-                        + f' {lang_dict[lang]["era"]})'
-                    )
-                )
-                lst.append(
-                    (
-                        (
-                            f'[i cyan][link=https://www.nisanyansozluk.com/ek/{quote(i["affixes"]["prefix"]["name"])}]'
-                            + i["affixes"]["prefix"]["name"]
-                            + "[/][/] "
+            try:
+                for i in word["etymologies"]:
+                    lang = i["languages"][0]["name"]
+                    dil = (
+                        f"({lang})"
+                        if lang not in lang_dict
+                        else (
+                            f'[cyan]([link={lang_dict[lang]["wiki_link"]}]'
+                            + lang_dict[lang]["name"]
+                            + "[/link]"
+                            + f' {lang_dict[lang]["era"]})'
                         )
-                        if (i["affixes"] != {} and "prefix" in i["affixes"])
-                        else ""
                     )
-                    + i["romanizedText"]
-                    + (
-                        (" ‹" + i["originalText"] + "›")
-                        if i["originalText"] != ""
-                        else ""
-                    )
-                    + (
+                    lst.append(
                         (
-                            f' [i cyan][link=https://www.nisanyansozluk.com/ek/{quote(i["affixes"]["suffix"]["name"])}]'
-                            + i["affixes"]["suffix"]["name"]
-                            + "[/][/]"
+                            (
+                                f'[i cyan][link=https://www.nisanyansozluk.com/ek/{quote(i["affixes"]["prefix"]["name"])}]'
+                                + i["affixes"]["prefix"]["name"]
+                                + "[/][/] "
+                            )
+                            if (i["affixes"] != {} and "prefix" in i["affixes"])
+                            else ""
                         )
-                        if (i["affixes"] != {} and "suffix" in i["affixes"])
-                        else ""
-                    )
-                    + f" [cyan]{dil}[/]"
-                    + (
-                        (
-                            ": [grey50]"
-                            + i["definition"].replace("a.a.", "[i]aynı anlam")
-                            + ".[/]"
+                        + i["romanizedText"]
+                        + (
+                            (" ‹" + i["originalText"] + "›")
+                            if i["originalText"] != ""
+                            else ""
                         )
-                        if i["definition"] != ""
-                        else ""
+                        + (
+                            (
+                                f' [i cyan][link=https://www.nisanyansozluk.com/ek/{quote(i["affixes"]["suffix"]["name"])}]'
+                                + i["affixes"]["suffix"]["name"]
+                                + "[/][/]"
+                            )
+                            if (i["affixes"] != {} and "suffix" in i["affixes"])
+                            else ""
+                        )
+                        + f" [cyan]{dil}[/]"
+                        + (
+                            (": [grey50]" + replace_chars(i["definition"]) + ".[/]")
+                            if i["definition"] != ""
+                            else ""
+                        )
                     )
-                )
-            # except:
-            #     continue
+            except:
+                continue
 
             sub = {}
             sub[lst[0]] = tree.add(lst[0])
