@@ -3,6 +3,7 @@ def replace_chars(text):
         text.replace("%b", "")
         .replace("%i", "")
         .replace("%u", "")
+        .replace("%l", "")
         .replace("ETü", "Eski Türkçe")
         .replace("a.a.", "aynı anlam")
     )

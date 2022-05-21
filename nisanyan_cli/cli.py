@@ -6,12 +6,25 @@ from urllib.parse import quote
 from .request import req
 from ._utils import *
 
+TITLES = {
+    "koken": "Köken:",
+    "daha_fazla": "Daha fazla bilgi için",
+    "ek_aciklama": "Ek Açıklama:",
+    "benzer_sozcukler": "Benzer Sözcükler:",
+    "maddeye_gonderenler": "Bu maddeye gönderenler:",
+    "tarihce": "Tarihçe: (tespit edilen en eski Türkçe kaynak ve diğer örnekler)",
+    "son_guncelleme": "Son Güncelleme",
+}
+
 
 class Niscli:
-    def __init__(self, word, request):
-        self.word = quote(word)
+    def __init__(self, word, request, plain):
+        self.word = word
         self.request = request
-        self.print_data()
+        if plain:
+            self.print_plain()
+            exit()
+        self.print_rich()
 
     def get_data(self):
         output = {}
@@ -59,7 +72,8 @@ class Niscli:
                 for j in lst:
                     tarihce = (
                         tarihce
-                        + f"{j[0]}\n  [i]{j[1]}[/]"
+                        + j[0]
+                        + (f"\n  [i]{j[1]}[/]" if j[1] != "" else "")
                         + ("\n" if j != lst[-1] else "")
                     )
             except:
@@ -69,16 +83,23 @@ class Niscli:
                 "koken": replace_chars(koken) if koken else None,
                 "daha_fazla": daha_fazla,
                 "ek_aciklama": replace_chars(i["note"]) if i["note"] else None,
-                "benzer_sozcukler": i["queries"],
+                "benzer_sozcukler": [j for j in i["queries"] if j != i["name"]],
                 "maddeye_gonderenler": maddeye_gonderenler,
                 "tarihce": tarihce,
                 "son_guncelleme": date_convert(i["timeUpdated"][:10]),
             }
         return output
 
-    def print_data(self):
+    def print_rich(self):
         data = self.get_data()
-        # print(data)
+        data2 = {}
+        for i in data:
+            data2[i] = {}
+            for j in data[i]:
+                if data[i][j]:
+                    data2[i][j] = data[i][j]
+        data = data2
+
         for i in data:
             table = Table(box=box.ROUNDED, show_footer=True, expand=True)
             table.add_column(
@@ -91,36 +112,56 @@ class Niscli:
                     style="grey42",
                 ),
             )
-            table.add_row(
-                "[#994E8E]Köken:[/#994E8E]\n" + data[i]["koken"] + "\n"
-            ) if data[i]["koken"] else None
-            table.add_row(
-                "Daha fazla bilgi için [cornflower_blue]"
-                + "[/], [cornflower_blue]".join(data[i]["daha_fazla"])
-                + "[/] "
-                + ("maddesine" if len(data[i]["daha_fazla"]) == 1 else "maddelerine")
-                + " bakınız."
-                + "\n"
-            ) if data[i]["daha_fazla"] else None
-            table.add_row(
-                "[#994E8E]Ek açıklama:[/#994E8E]\n" + data[i]["ek_aciklama"] + "\n"
-            ) if data[i]["ek_aciklama"] else None
-            table.add_row(
-                "[#994E8E]Benzer sözcükler:[/#994E8E]\n"
-                + ", ".join(data[i]["benzer_sozcukler"][:20])
-                + "\n"
-            ) if data[i]["benzer_sozcukler"] else None
-            table.add_row(
-                "[#994E8E]Bu maddeye gönderenler:[/#994E8E]\n[cornflower_blue]"
-                + "[/], [cornflower_blue]".join(data[i]["maddeye_gonderenler"][:24])
-                + "[/]\n"
-            ) if data[i]["maddeye_gonderenler"] else None
-            table.add_row(
-                "[#994E8E]Tarihçe: (tespit edilen en eski Türkçe kaynak ve diğer örnekler)[/#994E8E]\n"
-                + data[i]["tarihce"]
-            ) if data[i]["tarihce"] else None
+            for jx, j in enumerate(data[i]):
+                newline = "" if jx == len(list(data[i].keys())) - 2 else "\n"
+                if j == "son_guncelleme":
+                    continue
+                if j == "daha_fazla" and data[i][j]:
+                    table.add_row(
+                        f"{TITLES[j]} [cornflower_blue]"
+                        + "[/], [cornflower_blue]".join(data[i][j])
+                        + "[/] "
+                        + ("maddesine" if len(data[i][j]) == 1 else "maddelerine")
+                        + " bakınız."
+                        + newline
+                    )
+                    continue
+                if data[i][j]:
+                    content = data[i][j]
+                    title = f"[#994E8E]{TITLES[j]}[/#994E8E]\n"
+                    table.add_row(
+                        title
+                        + (
+                            content
+                            if type(content) != list
+                            else ", ".join(content[:20])
+                        )
+                        + newline
+                    )
             print(table)
+
         Console().print(
-            f"[grey42][link=https://www.nisanyansozluk.com/kelime/{self.word}]nisanyansozluk.com↗[/link]",
+            f"[grey42][link=https://www.nisanyansozluk.com/kelime/{quote(self.word)}]nisanyansozluk.com↗[/link]",
             justify="right",
         )
+
+    def print_plain(self):
+        data = self.get_data()
+        console = Console(no_color=True)
+        for i in data:
+            console.print(f":::...{i}...:::")
+            for j in data[i]:
+                elem = data[i][j]
+                if j == "son_guncelleme":
+                    continue
+                if j == "daha_fazla" and elem:
+                    console.print(
+                        f"{TITLES[j]} "
+                        + ", ".join(elem)
+                        + (" maddesine" if len(elem) == 1 else " maddelerine")
+                        + " bakınız.\n"
+                    )
+                    continue
+                if elem:
+                    elem = elem if type(elem) != list else ", ".join(elem)
+                    console.print(f"{TITLES[j]}\n{elem}\n") if elem else None

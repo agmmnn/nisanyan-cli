@@ -8,7 +8,7 @@
 
 CLI tool for Turkish etymological dictionary, [nisanyansozluk.com](https://www.nisanyansozluk.com/).
 
-_Not: 0.3 sürümü itibariyle 'yavaş selenium' yerine artık direkt nisanyan sözlüğün api endpoint'i[\*](https://github.com/agmmnn/Radyal-api#nisanyan-decrypt) kullanılmaktadır._
+_Not: 0.3 sürümünden itibaren selenium yerine direkt nisanyan sözlüğün api endpoint'i decode[\*](https://github.com/agmmnn/Radyal-api#nisanyan-decrypt) edilerek kullanılmaktadır._
 
 </div>
 
@@ -51,6 +51,12 @@ menekşe (Günümüz Türkçesi)
             └── vaxşaiti, vaxş- (Avestaca MÖ.2000): yetişmek, bitmek (bitki).
 ```
 
+## TODO
+
+- [ ] Köken metninin sitedeki gibi görünmesi için Api'dan dönen sonucun işlenmesi.
+- [ ] Ek açıklama metnindeki kısaltmaların normal hallerine çevrilmesi.
+- [ ] Decode işlemini python koduna uyarlama.[\*](https://github.com/agmmnn/Radyal-api/blob/master/api/nisanyan-decrypt.js) (crypto-js/aes, crypto-js/enc-utf8)
+
 ## Arguments
 
 ```
@@ -58,6 +64,7 @@ menekşe (Günümüz Türkçesi)
   -h, --help     show this help message and exit
   -t, --tree     show result as etymology tree
   -r, --random   selects a random word and brings the result
+  -p, --plain    plain text output
   -v, --version  show program's version number and exit
 ```
 

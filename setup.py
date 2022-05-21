@@ -1,5 +1,5 @@
 from setuptools import setup
-from nisanyan_cli.__main__ import __version__ as version
+from nisanyan_cli import __version__ as VERSION
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -13,8 +13,12 @@ DESCRIPTION = (
 
 setup(
     name="nisanyan-cli",
-    version=version,
+    version=VERSION,
     url="https://github.com/agmmnn/nisanyan-cli",
+    project_urls={
+        "Changelog": "https://github.com/agmmnn/nisanyan-cli/releases",
+        "Source": "https://github.com/agmmnn/nisanyan-cli",
+    },
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type="text/markdown",
