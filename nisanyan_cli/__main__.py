@@ -2,8 +2,10 @@ from argparse import ArgumentParser
 from urllib.parse import quote
 from .tree import Nistree
 from .cli import Niscli
+from .adlar import Nisadlar
 from .request import req
 from nisanyan_cli import __version__
+
 
 # parse arguments
 argparser = ArgumentParser(prog="nisanyan_cli")
@@ -35,6 +37,14 @@ argparser.add_argument(
     help="plain text output",
 )
 argparser.add_argument(
+    "-ad",
+    "--ad",
+    action="store",
+    type=str,
+    default="",
+    help="nisanyan adlar",
+)
+argparser.add_argument(
     "-v", "--version", action="version", version="%(prog)s v" + __version__
 )
 args = argparser.parse_args()
@@ -57,6 +67,9 @@ def close_words(word, request):
 
 
 def cli():
+    if args.ad:
+        Nisadlar(args.ad)
+        exit()
     if args.word:
         word = " ".join(args.word)
         request = req(quote(word))
@@ -68,7 +81,7 @@ def cli():
         else:
             Nistree(word, request)
     elif args.random:
-        word = req("asdfgh")["randomWord"]["name"]
+        word = req("nonexistentword")["randomWord"]["name"]
         request = req(quote(word))
         if not args.tree:
             Niscli(word, request, args.plain)
