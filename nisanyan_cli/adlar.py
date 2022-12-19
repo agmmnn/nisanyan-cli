@@ -18,14 +18,29 @@ def req(name):
 
 
 class Nisadlar:
-    def __init__(self, name):
-        self.name = name
-        self.data = req(quote(name))
-        self.print_rich()
+    def __init__(self, name, random: bool = False):
 
-    def print_rich(self):
+        if not name:
+            self.name = "nonexistname"
+        else:
+            self.name = name.capitalize()
+
+        self.data = req(quote(self.name))
+
+        if random:
+            self.name = self.data["pageProps"]["randomName"].capitalize()
+            self.data = req(quote(self.name))
+        elif self.name == "nonexistname":
+            exit(1)
+        elif self.data["pageProps"]["isUnsuccessful"]:
+            print("Not found!")
+            exit(1)
+
+        self.rich_output()
+
+    def rich_output(self):
         sex_symbol = {"K": "\u2640", "E": "\u2642"}
-        for i in self.data["names"]:
+        for i in self.data["pageProps"]["names"]["data"]:
             table = Table(box=box.ROUNDED, show_footer=True, expand=True)
             table.add_column(
                 f'{sex_symbol[i["sex"]]} {i["entry"]} [grey42]({i["cumulative"]} kişi)[/]',
@@ -54,10 +69,10 @@ class Nisadlar:
             ) if i["variants"] else None
             table.add_row(
                 "[#994E8E]İlgili Adlar:[/#994E8E]" + "\n" + ", ".join(i["relatedNames"])
-            ) if i["region"] else None
+            ) if i["relatedNames"] else None
 
             print(table)
         Console().print(
-            f"[grey42][link=https://www.nisanyanadlar.com/isim/{quote(self.name)}]nisanyansozluk.com↗[/link]",
+            f"[grey42][link=https://www.nisanyanadlar.com/isim/{quote(self.name)}]nisanyanadlar.com/isim/{self.name}↗[/link]",
             justify="right",
         )

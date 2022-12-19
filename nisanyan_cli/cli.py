@@ -141,7 +141,7 @@ class Niscli:
             print(table)
 
         Console().print(
-            f"[grey42][link=https://www.nisanyansozluk.com/kelime/{quote(self.word)}]nisanyansozluk.com↗[/link]",
+            f"[grey42][link=https://www.nisanyansozluk.com/kelime/{quote(self.word)}]nisanyansozluk.com/kelime/{self.word}↗[/link]",
             justify="right",
         )
 

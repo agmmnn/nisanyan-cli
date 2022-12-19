@@ -38,11 +38,9 @@ argparser.add_argument(
 )
 argparser.add_argument(
     "-ad",
-    "--ad",
-    action="store",
-    type=str,
-    default="",
-    help="nisanyan adlar",
+    action="store_true",
+    default=False,
+    help="show result from nisanyanadlar",
 )
 argparser.add_argument(
     "-v", "--version", action="version", version="%(prog)s v" + __version__
@@ -68,9 +66,9 @@ def close_words(word, request):
 
 def cli():
     if args.ad:
-        Nisadlar(args.ad)
-        exit()
-    if args.word:
+        name = " ".join(args.word)
+        Nisadlar(name, args.random)
+    elif args.word:
         word = " ".join(args.word)
         request = req(quote(word))
         if request["isUnsuccessful"]:
@@ -81,7 +79,7 @@ def cli():
         else:
             Nistree(word, request)
     elif args.random:
-        word = req("nonexistentword")["randomWord"]["name"]
+        word = req("nonexistword")["randomWord"]["name"]
         request = req(quote(word))
         if not args.tree:
             Niscli(word, request, args.plain)
