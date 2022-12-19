@@ -7,4 +7,4 @@ def req(word):
     conn.request("GET", f"/api/nisanyan-decrypt?word={word}")
     res = conn.getresponse()
     data = res.read()
-    return loads(data)["data"]
+    return loads(data)

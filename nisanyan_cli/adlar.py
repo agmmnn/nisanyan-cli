@@ -40,7 +40,7 @@ class Nisadlar:
 
     def rich_output(self):
         sex_symbol = {"K": "\u2640", "E": "\u2642"}
-        for i in self.data["pageProps"]["names"]["data"]:
+        for i in self.data["pageProps"]["names"]:
             table = Table(box=box.ROUNDED, show_footer=True, expand=True)
             table.add_column(
                 f'{sex_symbol[i["sex"]]} {i["entry"]} [grey42]({i["cumulative"]} kişi)[/]',
