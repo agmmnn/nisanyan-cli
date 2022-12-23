@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "nisanyan-cli"
+version = "0.4.2"
+description = "CLI tool for Turkish etymological dictionary, nisanyansozluk.com (nis <word>)"
+authors = ["Gökçe <agmmnn@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "nisanyan_cli" }]
+homepage = "https://github.com/agmmnn/nisanyan-cli"
+repository = "https://github.com/agmmnn/nisanyan-cli"
+keywords = ["synonym", "antonym", "thesaurus", "cli"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Topic :: Utilities",
+]
+
+[tool.poetry.urls]
+Changelog = "https://github.com/agmmnn/nisanyan-cli/releases"
+Source = "https://github.com/agmmnn/nisanyan-cli"
+"Bug Tracker" = "https://github.com/agmmnn/nisanyan-cli/issues"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+rich = "^12.6.0"
+importlib-metadata = "^5.2.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.12.0"
+
+[tool.poetry.scripts]
+nis = "nisanyan_cli.__main__:cli"
+
+[tool.black]
+includes = "nisanyan_cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
