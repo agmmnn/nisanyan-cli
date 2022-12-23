@@ -8,8 +8,6 @@
 
 CLI tool for Turkish etymological dictionary, [nisanyansozluk.com](https://www.nisanyansozluk.com/).
 
-_Not: 0.3 sürümünden itibaren selenium yerine direkt nisanyan sözlüğün api endpoint'i decode[\*](https://github.com/agmmnn/Radyal-api#nisanyan-decrypt) edilerek kullanılmaktadır._
-
 </div>
 
 ## Install
