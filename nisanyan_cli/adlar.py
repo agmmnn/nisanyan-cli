@@ -6,15 +6,17 @@ from rich import print
 from ._adlar_cache import cache
 from urllib.parse import quote
 from http.client import HTTPSConnection
-from json import loads
+import json
 
 
 def req(name):
-    conn = HTTPSConnection("radyal-api.vercel.app")
-    conn.request("GET", f"/api/nisanyanadlar-decrypt?name={name}")
+    conn = HTTPSConnection("www.nisanyanadlar.com")
+    conn.request(
+        "GET", f"/_next/data/hFuzpyuQYJJeP-e3Q0pgO/isim/{name}.json?name={name}"
+    )
     res = conn.getresponse()
     data = res.read()
-    return loads(data)
+    return json.loads(data)
 
 
 class Nisadlar:
@@ -40,7 +42,7 @@ class Nisadlar:
 
     def rich_output(self):
         sex_symbol = {"K": "\u2640", "E": "\u2642"}
-        for i in self.data["pageProps"]["names"]:
+        for i in json.loads(self.data["pageProps"]["names"]):
             table = Table(box=box.ROUNDED, show_footer=True, expand=True)
             table.add_column(
                 f'{sex_symbol[i["sex"]]} {i["entry"]} [grey42]({i["cumulative"]} kişi)[/]',
@@ -65,7 +67,6 @@ class Nisadlar:
                 "[#994E8E]Farklı Yazılışlar:[/#994E8E]"
                 + "\n"
                 + ", ".join([f'{j["name"]} ({j["count"]})' for j in i["variants"]])
-                + "\n"
             ) if i["variants"] else None
             table.add_row(
                 "[#994E8E]İlgili Adlar:[/#994E8E]" + "\n" + ", ".join(i["relatedNames"])

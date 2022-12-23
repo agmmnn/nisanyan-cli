@@ -1,10 +1,11 @@
 from argparse import ArgumentParser
+from importlib_metadata import version
 from urllib.parse import quote
+
 from .tree import Nistree
 from .cli import Niscli
 from .adlar import Nisadlar
 from .request import req
-from nisanyan_cli import __version__
 
 
 # parse arguments
@@ -43,7 +44,10 @@ argparser.add_argument(
     help="show result from nisanyanadlar",
 )
 argparser.add_argument(
-    "-v", "--version", action="version", version="%(prog)s v" + __version__
+    "-v",
+    "--version",
+    action="version",
+    version=f"nisanyan-cli {version('nisanyan-cli')}",
 )
 args = argparser.parse_args()
 

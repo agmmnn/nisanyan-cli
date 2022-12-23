@@ -3,8 +3,8 @@ from json import loads
 
 
 def req(word):
-    conn = HTTPSConnection("radyal-api.vercel.app")
-    conn.request("GET", f"/api/nisanyan-decrypt?word={word}")
+    conn = HTTPSConnection("www.nisanyansozluk.com")
+    conn.request("GET", f"/api/words/{word}?session=1")
     res = conn.getresponse()
     data = res.read()
     return loads(data)
