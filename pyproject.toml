@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nisanyan-cli"
-version = "0.4.2"
+version = "0.4.3"
 description = "CLI tool for Turkish etymological dictionary, nisanyansozluk.com (nis <word>)"
 authors = ["Gökçe <agmmnn@gmail.com>"]
 readme = "README.md"
@@ -22,7 +22,7 @@ Source = "https://github.com/agmmnn/nisanyan-cli"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-rich = "^12.6.0"
+rich = "^13.0.0"
 importlib-metadata = "^5.2.0"
 
 [tool.poetry.group.dev.dependencies]
