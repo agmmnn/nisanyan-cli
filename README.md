@@ -4,7 +4,9 @@
 <a href="https://github.com/agmmnn/nisanyan-cli">
 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/agmmnn/nisanyan-cli"></a>
 <a href="https://pypi.org/project/nisanyan-cli/">
-<img alt="PyPI" src="https://img.shields.io/pypi/v/nisanyan-cli"></a>
+<img alt="PyPI" src="https://img.shields.io/pypi/v/nisanyan-cli"></a> 
+<a href="https://pepy.tech/project/nisanyan-cli">
+<img alt="Total Downloads" src="https://static.pepy.tech/personalized-badge/nisanyan-cli?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads"></a>
 
 CLI tool for Turkish etymological dictionary, [nisanyansozluk.com](https://www.nisanyansozluk.com/).
 
