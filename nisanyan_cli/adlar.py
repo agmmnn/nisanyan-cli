@@ -11,9 +11,7 @@ import json
 
 def req(name):
     conn = HTTPSConnection("www.nisanyanadlar.com")
-    conn.request(
-        "GET", f"/_next/data/hFuzpyuQYJJeP-e3Q0pgO/isim/{name}.json?name={name}"
-    )
+    conn.request("GET", f"/api/names?name={name}&gender=all&session=1")
     res = conn.getresponse()
     data = res.read()
     return json.loads(data)
@@ -30,11 +28,11 @@ class Nisadlar:
         self.data = req(quote(self.name))
 
         if random:
-            self.name = self.data["pageProps"]["randomName"].capitalize()
+            self.name = self.data["randomName"].capitalize()
             self.data = req(quote(self.name))
         elif self.name == "nonexistname":
             exit(1)
-        elif self.data["pageProps"]["isUnsuccessful"]:
+        elif self.data["isUnsuccessful"]:
             print("Not found!")
             exit(1)
 
@@ -42,7 +40,8 @@ class Nisadlar:
 
     def rich_output(self):
         sex_symbol = {"K": "\u2640", "E": "\u2642"}
-        for i in json.loads(self.data["pageProps"]["names"]):
+
+        for i in self.data["names"]:
             table = Table(box=box.ROUNDED, show_footer=True, expand=True)
             table.add_column(
                 f'{sex_symbol[i["sex"]]} {i["entry"]} [grey42]({i["cumulative"]} kişi)[/]',
