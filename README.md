@@ -1,4 +1,4 @@
-![screenshot](https://user-images.githubusercontent.com/16024979/162843362-4050c114-dc82-49eb-ac43-dd6cef79382a.png)
+![screenshot](https://github.com/agmmnn/nisanyan-cli/assets/16024979/c19b628b-c0c3-4ca9-aef2-4172bbc53a7d)
 
 <div align="center">
 <a href="https://github.com/agmmnn/nisanyan-cli">
@@ -21,10 +21,10 @@ pip install nisanyan-cli
 ## Usege
 
 ```
-$ nis yakamoz
+$ nis anadolu
 ```
 
-![nisanyan-cli](https://user-images.githubusercontent.com/16024979/162844886-7831aebc-8efe-4018-9df5-b26babcc1ca3.png)
+![nisanyan-cli](https://github.com/agmmnn/nisanyan-cli/assets/16024979/1fef51dc-caec-42cf-82ad-4dca8ac4ca71)
 
 ### Etymology Tree (`--tree`, `-t`):
 
@@ -38,7 +38,7 @@ $ nis çikolata --tree
             └── atl (Aztekçe): su.
 ```
 
-![Etymology Tree](https://user-images.githubusercontent.com/16024979/164780578-0d51d1b1-31b6-48a4-a09e-b42aa6b6c515.png)
+![Turkish Etymology Tree](https://github.com/agmmnn/nisanyan-cli/assets/16024979/c19b628b-c0c3-4ca9-aef2-4172bbc53a7d)
 
 ### Random Word (`--random`, `-r`):
 
@@ -57,7 +57,7 @@ menekşe (Günümüz Türkçesi)
 $ nis gökçe -ad
 ```
 
-<img src="https://user-images.githubusercontent.com/16024979/208524422-115cf48b-b2db-4e3e-880f-d43784ed48c6.png" alt="NisanyanAdlar" width="540"/>
+![NisanyanAdlar](https://github.com/agmmnn/nisanyan-cli/assets/16024979/75bca210-904a-410b-9de7-f5cb0aaf2396)
 
 Also you can use `--random`, `-r` argument with `-ad` argument: `nis -ad -r`
 
@@ -72,7 +72,7 @@ options:
     -t, --tree     show result as etymology tree
     -r, --random   selects a random word and brings the result
     -p, --plain    plain text output
-    -ad            show result from nisanyanadlar
+    -ad            show result from nisanyanadlar.com
     -v, --version  show program's version number and exit
 ```
 
