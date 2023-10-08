@@ -80,7 +80,6 @@ options:
 
 - [ ] Köken metninin sitedeki gibi görünmesi için Api'dan dönen sonucun işlenmesi.
 - [ ] Ek açıklama metnindeki kısaltmaların normal hallerine çevrilmesi.
-- [ ] Decode işlemini python koduna uyarlama.[\*](https://github.com/agmmnn/Radyal-api/blob/master/api/nisanyan-decrypt.js) (crypto-js/aes, crypto-js/enc-utf8)
 
 ## Dependencies
 
