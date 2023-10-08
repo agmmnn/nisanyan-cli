@@ -57,7 +57,7 @@ def close_words(word, request):
 
     clr = 238
     fiveBefore, fiveAfter = [], []
-    for (b, a) in zip(request["fiveBefore"][::-1], request["fiveAfter"]):
+    for b, a in zip(request["fiveBefore"][::-1], request["fiveAfter"]):
         clr = clr - 25
         fiveBefore.append(f"[rgb({clr},{clr},{clr})]" + b["name"] + "[/]")
         fiveAfter.append(f"[rgb({clr},{clr},{clr})]" + a["name"] + "[/]")
