@@ -76,11 +76,27 @@ options:
     -v, --version  show program's version number and exit
 ```
 
-## TODO
 
-- [ ] Köken metninin sitedeki gibi görünmesi için Api'dan dönen sonucun işlenmesi.
-- [ ] Ek açıklama metnindeki kısaltmaların normal hallerine çevrilmesi.
+
 
 ## Dependencies
 
 - [rich](https://pypi.org/project/rich/)
+- [poetry](https://python-poetry.org/docs/)
+
+## Initialize Developer Environment
+
+1. Install [Poetry](https://python-poetry.org/docs/)
+2. Install dependencies:
+   ```bash
+   poetry install
+   ```
+3. Run the CLI:
+   ```bash
+   poetry run nis <word>
+   ```
+
+## TODO
+
+- [ ] Köken metninin sitedeki gibi görünmesi için Api'dan dönen sonucun işlenmesi.
+- [ ] Ek açıklama metnindeki kısaltmaların normal hallerine çevrilmesi.
