@@ -18,7 +18,7 @@ CLI tool for Turkish etymological dictionary, [nisanyansozluk.com](https://www.n
 pip install nisanyan-cli
 ```
 
-## Usege
+## Usage
 
 ```
 $ nis anadolu
