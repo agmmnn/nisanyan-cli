@@ -83,7 +83,7 @@ class Niscli:
                 "koken": replace_chars(koken) if koken else None,
                 "daha_fazla": daha_fazla,
                 "ek_aciklama": replace_chars(i["note"]) if i["note"] else None,
-                "benzer_sozcukler": [j for j in i["queries"] if j != i["name"]],
+                "benzer_sozcukler": i.get("similarWords", []),
                 "maddeye_gonderenler": maddeye_gonderenler,
                 "tarihce": tarihce,
                 "son_guncelleme": date_convert(i["timeUpdated"][:10]),
