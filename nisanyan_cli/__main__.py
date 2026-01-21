@@ -89,6 +89,8 @@ def cli():
             Niscli(word, request, args.plain)
         else:
             Nistree(word, request)
+    else:
+        argparser.print_help()
 
 
 if __name__ == "__main__":
