@@ -1,38 +1,46 @@
-from rich import print, box
-from rich.table import Table
-from rich.console import Console
+from rich import box, print
 from rich.align import Align
-from rich import print
-from ._adlar_cache import cache
+from rich.console import Console
+from rich.table import Table
 from urllib.parse import quote
-from http.client import HTTPSConnection
-import json
-
-
-def req(name):
-    conn = HTTPSConnection("www.nisanyanadlar.com")
-    conn.request("GET", f"/api/names/{name}?session=1")
-    res = conn.getresponse()
-    data = res.read()
-    return json.loads(data)
+from .request import req
+import sys
 
 
 class Nisadlar:
     def __init__(self, name, random: bool = False):
-        if not name:
-            self.name = "nonexistname"
-        else:
-            self.name = name.capitalize()
+        self.name = name
+        self.random = random
+        self.data = None
 
-        self.data = req(quote(self.name))
-        if random:
+    def run(self):
+        self.fetch_data()
+        self.display()
+
+    def fetch_data(self):
+        if not self.name and not self.random:
+            self.name = "nonexistname"
+
+        if self.name:
+            self.name = self.name.capitalize()
+        else:
+            self.name = "nonexistname"
+
+        self.data = req(f"/api/names/{quote(self.name)}", host="www.nisanyanadlar.com")
+
+        if self.random and self.data and "randomName" in self.data:
             self.name = self.data["randomName"].capitalize()
-            self.data = req(quote(self.name))
-        elif self.name == "nonexistname":
-            exit(1)
-        elif not self.data["isSuccessful"]:
+            self.data = req(
+                f"/api/names/{quote(self.name)}", host="www.nisanyanadlar.com"
+            )
+
+    def display(self):
+        if not self.data:
+            return
+
+        if not self.data.get("isSuccessful"):
             print("Not found!")
-            exit(1)
+            sys.exit(1)
 
         self.rich_output()
 
@@ -77,12 +85,14 @@ class Nisadlar:
                     style="grey42",
                 ),
             )
-            # cache["nations"] nat_code=yt : cache["languages"] lang_code:t
-            table.add_row(
-                "[#994E8E]Köken:[/#994E8E]" + "\n" + i["definition"] + "\n"
-            ) if i["definition"] else None
-            table.add_row((i["note"]) + "\n") if i["note"] else None
-            # 0: ulusal t: türkçe alanı
+
+            if i["definition"]:
+                table.add_row(
+                    "[#994E8E]Köken:[/#994E8E]" + "\n" + i["definition"] + "\n"
+                )
+            if i["note"]:
+                table.add_row((i["note"]) + "\n")
+
             table.add_row(
                 "[#994E8E]Dağılım:[/#994E8E]"
                 + "\n"
@@ -93,16 +103,20 @@ class Nisadlar:
                 )
                 + "\n"
             )
-            table.add_row(
-                "[#994E8E]Farklı Yazılışlar: (Alfabetik)[/#994E8E]"
-                + "\n"
-                + ", ".join(
-                    [f'{j["name"]} ({j["count"]["total"]})' for j in i["variants"]]
+
+            if i["variants"]:
+                table.add_row(
+                    "[#994E8E]Farklı Yazılışlar: (Alfabetik)[/#994E8E]"
+                    + "\n"
+                    + ", ".join(
+                        [f'{j["name"]} ({j["count"]["total"]})' for j in i["variants"]]
+                    )
                 )
-            ) if i["variants"] else None
-            table.add_row(
-                "[#994E8E]İlgili Adlar:[/#994E8E]" + "\n" + ", ".join(i["relatedNames"])
-            ) if i["relatedNames"] else None
+
+            if i["relatedNames"]:
+                table.add_row(
+                    "[#994E8E]İlgili Adlar:[/#994E8E]" + "\n" + ", ".join(i["relatedNames"])
+                )
 
             print(table)
         Console().print(

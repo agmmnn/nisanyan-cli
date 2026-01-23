@@ -3,8 +3,7 @@ from rich.table import Table
 from rich.console import Console
 from rich.align import Align
 from urllib.parse import quote
-from .request import req
-from ._utils import *
+from ._utils import replace_chars, date_convert
 
 TITLES = {
     "koken": "Köken:",
@@ -18,75 +17,108 @@ TITLES = {
 
 
 class Niscli:
-    def __init__(self, word, request, plain):
+    def __init__(self, word, request, plain=False):
         self.word = word
         self.request = request
-        if plain:
+        self.plain = plain
+
+    def display(self):
+        if self.plain:
             self.print_plain()
-            exit()
-        self.print_rich()
+        else:
+            self.print_rich()
 
     def get_data(self):
         output = {}
         data = self.request
-        for i in data["words"]:
+        words = data.get("words", [])
+
+        for i in words:
             # Köken
             try:
                 lst = []
                 koken = ""
-                for j in i["etymologies"]:
+                etymologies = i.get("etymologies", [])
+                for j in etymologies:
+                    languages = j.get("languages", [])
+                    lang_name = languages[0]["name"] if languages else ""
+
+                    romanized = j.get("romanizedText", "")
+                    original = j.get("originalText", "")
+                    definition = j.get("definition", "")
+
                     txt = (
-                        f'[b]{j["languages"][0]["name"]}[/] [i]{j["romanizedText"]}[/] {(j["originalText"]+" " if j["originalText"]!=""else"")}'
-                        + ("“" + j["definition"] + "”" if j["definition"] != "" else "")
+                        f'[b]{lang_name}[/] [i]{romanized}[/] {(original+" " if original else "")}'
+                        + ("“" + definition + "”" if definition else "")
                     )
                     lst.append(txt)
                 for j in lst:
                     koken = koken + j + ". "
-            except:
+            except (KeyError, IndexError):
                 koken = None
+
             # Daha fazla
             try:
-                daha_fazla = [j["name"] for j in i["references"]]
-            except:
+                daha_fazla = [j["name"] for j in i.get("references", [])]
+            except (KeyError, TypeError):
                 daha_fazla = []
+
             # Bu maddeye gönderenler
             try:
-                maddeye_gonderenler = [j["name"] for j in i["referenceOf"]]
-            except:
+                maddeye_gonderenler = [j["name"] for j in i.get("referenceOf", [])]
+            except (KeyError, TypeError):
                 maddeye_gonderenler = []
+
             # Tarihçe
             try:
                 lst = []
                 tarihce = ""
-                for j in i["histories"]:
+                histories = i.get("histories", [])
+                for j in histories:
+                    language = j.get("language", {})
+                    lang_name = language.get("name") if language else ""
+
+                    definition = j.get("definition", "")
+                    excerpt = j.get("excerpt", "")
+                    source = j.get("source", {})
+                    source_name = source.get("name", "")
+                    source_book = source.get("book", "")
+                    date = j.get("date", "")
+
                     txt = (
-                        (f'{j["language"]["name"]}: ' if "language" in j else "")
-                        + (f'"{j["definition"]}" ' if j["definition"] != "" else "")
-                        + (f'[i]{j["excerpt"]}[/] ' if j["excerpt"] != "" else "")
-                        + f'[grey50][{(j["source"]["name"]+", ") if j["source"]["name"]!=""else ""}{j["source"]["book"]}, {j["date"]}][/]'
+                        (f'{lang_name}: ' if lang_name else "")
+                        + (f'"{definition}" ' if definition else "")
+                        + (f'[i]{excerpt}[/] ' if excerpt else "")
+                        + f'[grey50][{(source_name+", ") if source_name else ""}{source_book}, {date}][/]'
                     )
-                    quote = replace_chars(
-                        j["quote"].replace("[", "〔").replace("]", "〕")
+
+                    quote_text = j.get("quote", "")
+                    quote_val = replace_chars(
+                        quote_text.replace("[", "〔").replace("]", "〕")
                     )
-                    lst.append([txt, quote])
-                for j in lst:
+                    lst.append([txt, quote_val])
+
+                for j_idx, j in enumerate(lst):
                     tarihce = (
                         tarihce
                         + j[0]
-                        + (f"\n  [i]{j[1]}[/]" if j[1] != "" else "")
-                        + ("\n" if j != lst[-1] else "")
+                        + (f"\n  [i]{j[1]}[/]" if j[1] else "")
+                        + ("\n" if j_idx != len(lst) - 1 else "")
                     )
-            except:
+            except (KeyError, IndexError, TypeError):
                 tarihce = None
+
+            time_updated = i.get("timeUpdated", "")
+            son_guncelleme = date_convert(time_updated[:10]) if time_updated else ""
 
             output[i["name"]] = {
                 "koken": replace_chars(koken) if koken else None,
                 "daha_fazla": daha_fazla,
-                "ek_aciklama": replace_chars(i["note"]) if i["note"] else None,
+                "ek_aciklama": replace_chars(i.get("note", "")) if i.get("note") else None,
                 "benzer_sozcukler": i.get("similarWords", []),
                 "maddeye_gonderenler": maddeye_gonderenler,
                 "tarihce": tarihce,
-                "son_guncelleme": date_convert(i["timeUpdated"][:10]),
+                "son_guncelleme": son_guncelleme,
             }
         return output
 
@@ -106,7 +138,7 @@ class Niscli:
                 i,
                 header_style="bold",
                 footer=Align(
-                    data[i]["son_guncelleme"],
+                    data[i].get("son_guncelleme", ""),
                     vertical="middle",
                     align="right",
                     style="grey42",

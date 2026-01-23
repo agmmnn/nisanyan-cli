@@ -1,12 +1,45 @@
+import re
+
+
 def replace_chars(text):
-    return (
+    text = (
         text.replace("%b", "")
         .replace("%i", "")
         .replace("%u", "")
         .replace("%l", "")
-        .replace("ETü", "Eski Türkçe")
-        .replace("a.a.", "aynı anlam")
+        .replace("%r", "")
     )
+
+    replacements = {
+        "ETü": "Eski Türkçe",
+        "a.a.": "aynı anlam",
+        "Yun": "Yunanca",
+        "Lat": "Latince",
+        "Ar": "Arapça",
+        "Far": "Farsça",
+        "Fa": "Farsça",
+        "Fr": "Fransızca",
+        "İng": "İngilizce",
+        "Tr": "Türkçe",
+        "Erm": "Ermenice",
+        "Osm": "Osmanlıca",
+        "Sür": "Süryanice",
+        "İbr": "İbranice",
+        "Sans": "Sanskritçe",
+        "Alm": "Almanca",
+        "İt": "İtalyanca",
+        "Moğ": "Moğolca",
+        "Rum": "Rumca",
+        "Eth": "Etiyopça",
+        "TTü": "Türkiye Türkçesi",
+        "YTü": "Yeni Türkçe",
+    }
+
+    for k, v in replacements.items():
+        pattern = r"(?<!\w)" + re.escape(k) + r"(?!\w)"
+        text = re.sub(pattern, v, text)
+
+    return text
 
 
 def date_convert(date):
