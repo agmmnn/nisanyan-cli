@@ -1,12 +1,12 @@
-[tool.poetry]
+[project]
 name = "nisanyan-cli"
-version = "0.4.4"
+version = "0.4.5"
 description = "CLI tool for Turkish etymological dictionary, nisanyansozluk.com (nis <word>)"
-authors = ["Gökçe <agmmnn@gmail.com>"]
 readme = "README.md"
-packages = [{ include = "nisanyan_cli" }]
-homepage = "https://github.com/agmmnn/nisanyan-cli"
-repository = "https://github.com/agmmnn/nisanyan-cli"
+requires-python = ">=3.8"
+authors = [
+    { name = "Gökçe", email = "agmmnn@gmail.com" }
+]
 keywords = ["synonym", "antonym", "thesaurus", "cli"]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -14,26 +14,31 @@ classifiers = [
     "Environment :: Console",
     "Topic :: Utilities",
 ]
+dependencies = [
+    "rich>=13.6.0",
+    "importlib-metadata>=6.8.0",
+]
 
-[tool.poetry.urls]
+[project.urls]
+Homepage = "https://github.com/agmmnn/nisanyan-cli"
+Repository = "https://github.com/agmmnn/nisanyan-cli"
 Changelog = "https://github.com/agmmnn/nisanyan-cli/releases"
-Source = "https://github.com/agmmnn/nisanyan-cli"
 "Bug Tracker" = "https://github.com/agmmnn/nisanyan-cli/issues"
 
-[tool.poetry.dependencies]
-python = "^3.8"
-rich = "^13.6.0"
-importlib-metadata = "^6.8.0"
-
-[tool.poetry.group.dev.dependencies]
-black = "*"
-
-[tool.poetry.scripts]
+[project.scripts]
 nis = "nisanyan_cli.__main__:cli"
+
+[dependency-groups]
+dev = [
+    "black",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["nisanyan_cli"]
 
 [tool.black]
 includes = "nisanyan_cli"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

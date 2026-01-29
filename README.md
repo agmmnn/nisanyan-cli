@@ -26,6 +26,12 @@ Explore the origins, history, and development of Turkish words directly from you
 pip install nisanyan-cli
 ```
 
+or
+
+```bash
+uv tool install nisanyan-cli
+```
+
 ## Usage
 
 ### Basic Search
